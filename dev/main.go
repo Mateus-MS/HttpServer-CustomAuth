@@ -6,6 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/app"
+	routes_prod "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/prod"
+	routes_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/user"
+
+	//service_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/services/user"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/acme/autocert"
 )
@@ -15,10 +20,15 @@ func main() {
 		log.Fatal("Error loading .env file: ", err)
 	}
 
-	router := http.NewServeMux()
+	app := app.NewApplication()
 
-	startServer(router, os.Getenv("ENV"))
+	routes_user.RegisterRoutes(app)
+	routes_prod.RegisterRoutes(app)
 
+	// Initiate services
+	//seviceUser := service_user.ServiceUser{App: &app}
+
+	startServer(app.Router, os.Getenv("ENV"))
 }
 
 func startServer(router *http.ServeMux, env string) {
