@@ -1,9 +1,7 @@
 package service_prod
 
-import (
-	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/app"
-)
+import "database/sql"
 
 type ServiceProd struct {
-	App *app.Application
+	DB *sql.DB
 }

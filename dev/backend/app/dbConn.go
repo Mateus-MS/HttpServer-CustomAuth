@@ -10,8 +10,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func startDBConnection(user, pass, dbname string) *sql.DB {
-	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable port=42069", user, pass, dbname)
+func startDBConnection(user, pass, dbname, dbport string) *sql.DB {
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable port=%s", user, pass, dbname, dbport)
 
 	client, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -26,7 +26,7 @@ var once sync.Once
 
 func GetInstance() *sql.DB {
 	once.Do(func() {
-		instance = startDBConnection(os.Getenv("DBuser"), os.Getenv("DBpass"), "cluster")
+		instance = startDBConnection(os.Getenv("DBuser"), os.Getenv("DBpass"), os.Getenv("DBname"), os.Getenv("DBport"))
 	})
 	return instance
 }

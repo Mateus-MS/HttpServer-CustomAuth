@@ -1,7 +1,9 @@
 package service_user
 
-import "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/app"
+import (
+	"database/sql"
+)
 
 type ServiceUser struct {
-	App *app.Application
+	DB *sql.DB
 }

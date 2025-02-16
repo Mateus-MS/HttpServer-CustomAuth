@@ -9,7 +9,7 @@ import (
 	test_utils "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/test/utils"
 )
 
-func TestCreate(t *testing.T) {
+func TestSearch(t *testing.T) {
 	db := test_utils.SetupTestDB(t)
 	defer test_utils.TeardownTestDB(t, db)
 
@@ -20,63 +20,41 @@ func TestCreate(t *testing.T) {
 
 	user := models.User{
 		Username: "test",
-		Password: "test",
 		Email:    "test",
-	}
-
-	err := app.UserService.Create(&user)
-
-	if err != nil {
-		t.Errorf("Expected nil, got error: %v", err)
-	}
-}
-
-func TestCreate_EmptyFields(t *testing.T) {
-	db := test_utils.SetupTestDB(t)
-	defer test_utils.TeardownTestDB(t, db)
-
-	app := app.Application{
-		DB: db,
-	}
-	app.UserService = &service_user.ServiceUser{DB: app.DB}
-
-	user := models.User{
-		Username: "",
-		Password: "",
-		Email:    "",
-	}
-
-	err := app.UserService.Create(&user)
-
-	if err == nil {
-		t.Errorf("Expected error, got nil: %v", err)
-	}
-}
-
-func TestCreate_InvalidFields(t *testing.T) {
-
-}
-
-func TestCreate_DuplicatedUser(t *testing.T) {
-	db := test_utils.SetupTestDB(t)
-	defer test_utils.TeardownTestDB(t, db)
-
-	app := app.Application{
-		DB: db,
-	}
-	app.UserService = &service_user.ServiceUser{DB: app.DB}
-
-	user := models.User{
-		Username: "test",
 		Password: "test",
-		Email:    "test",
 	}
 
 	app.UserService.Create(&user)
 
-	err := app.UserService.Create(&user)
+	userOBJ, err := app.UserService.Search(&user)
 
 	if err != nil {
-		t.Errorf("Expected error, got nil: %v", err)
+		t.Error("Expected nil, got error")
+	}
+
+	if userOBJ.Username != user.Username {
+		t.Errorf("Expected %s, got %s", user.Username, userOBJ.Username)
+	}
+}
+
+func TestSearch_Unexisting(t *testing.T) {
+	db := test_utils.SetupTestDB(t)
+	defer test_utils.TeardownTestDB(t, db)
+
+	app := app.Application{
+		DB: db,
+	}
+	app.UserService = &service_user.ServiceUser{DB: app.DB}
+
+	user := models.User{
+		Username: "test",
+		Email:    "test",
+		Password: "test",
+	}
+
+	_, err := app.UserService.Search(&user)
+
+	if err == nil {
+		t.Error("Expected error, got nil")
 	}
 }
