@@ -5,6 +5,7 @@ import (
 
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/app"
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/models"
+	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/services"
 	service_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/services/user"
 	test_utils "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/test/utils"
 )
@@ -16,7 +17,8 @@ func TestSearch(t *testing.T) {
 	app := app.Application{
 		DB: db,
 	}
-	app.UserService = &service_user.ServiceUser{DB: app.DB}
+	app.Services = make(map[string]services.Service)
+	app.Services["user"] = &service_user.ServiceUser{DB: app.DB}
 
 	user := models.User{
 		Username: "test",
@@ -24,9 +26,9 @@ func TestSearch(t *testing.T) {
 		Password: "test",
 	}
 
-	app.UserService.Create(&user)
+	app.Services["user"].Create(&user)
 
-	userOBJ, err := app.UserService.Search(&user)
+	userOBJ, err := app.Services["user"].Search(&user)
 
 	if err != nil {
 		t.Error("Expected nil, got error")
@@ -44,7 +46,8 @@ func TestSearch_Unexisting(t *testing.T) {
 	app := app.Application{
 		DB: db,
 	}
-	app.UserService = &service_user.ServiceUser{DB: app.DB}
+	app.Services = make(map[string]services.Service)
+	app.Services["user"] = &service_user.ServiceUser{DB: app.DB}
 
 	user := models.User{
 		Username: "test",
@@ -52,7 +55,7 @@ func TestSearch_Unexisting(t *testing.T) {
 		Password: "test",
 	}
 
-	_, err := app.UserService.Search(&user)
+	_, err := app.Services["user"].Search(&user)
 
 	if err == nil {
 		t.Error("Expected error, got nil")

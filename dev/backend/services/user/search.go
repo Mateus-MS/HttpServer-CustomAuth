@@ -1,6 +1,10 @@
 package service_user
 
-import "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/models"
+import (
+	"database/sql"
+
+	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/models"
+)
 
 func (service *ServiceUser) Search(userOBJ *models.User) (user *models.User, err error) {
 	query := `
@@ -14,7 +18,9 @@ func (service *ServiceUser) Search(userOBJ *models.User) (user *models.User, err
 	`
 
 	err = service.DB.QueryRow(query, userOBJ.Username, userOBJ.Email).Scan(&userOBJ.ID, &userOBJ.Username, &userOBJ.Email)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		return nil, models.ErrorInvalidUser
+	} else if err != nil {
 		return nil, err
 	}
 
