@@ -6,18 +6,21 @@ import (
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/models"
 )
 
-func (service *ServiceUser) Search(userOBJ *models.User) (user *models.User, err error) {
+func Search(userOBJ *models.User, db *sql.DB) (user *models.User, err error) {
 	query := `
 		SELECT
 			id,
 			username,
-			email
+			email,
+			session_token
 		FROM tb_user
 		WHERE username = $1
 		OR email = $2
 	`
 
-	err = service.DB.QueryRow(query, userOBJ.Username, userOBJ.Email).Scan(&userOBJ.ID, &userOBJ.Username, &userOBJ.Email)
+	println("Searching for user: ", userOBJ.Username)
+
+	err = db.QueryRow(query, userOBJ.Username, userOBJ.Email).Scan(&userOBJ.ID, &userOBJ.Username, &userOBJ.Email, &userOBJ.SessionToken)
 	if err == sql.ErrNoRows {
 		return nil, models.ErrorInvalidUser
 	} else if err != nil {

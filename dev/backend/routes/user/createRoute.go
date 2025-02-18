@@ -23,7 +23,7 @@ func (app *RoutesUser) CreateRoute(w http.ResponseWriter, r *http.Request) {
 		Password: pass,
 	}
 
-	if err := app.App.Services["user"].(*service_user.ServiceUser).Create(&registerOBJ); err != nil {
+	if err := service_user.Create(&registerOBJ, app.App.DB); err != nil {
 		if err.Error() == `pq: duplicate key value violates unique constraint "tb_user_username_key"` {
 			w.WriteHeader(http.StatusConflict)
 			return
