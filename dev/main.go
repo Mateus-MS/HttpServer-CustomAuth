@@ -7,8 +7,9 @@ import (
 	"os"
 
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/app"
-	routes_prod "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/prod"
-	routes_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/user"
+	routes_api_prod "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/api/prod"
+	routes_api_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/api/user"
+	routes_pages "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/routes/pages"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/acme/autocert"
 )
@@ -20,8 +21,10 @@ func main() {
 
 	app := app.NewApplication()
 
-	routes_user.RegisterRoutes(app)
-	routes_prod.RegisterRoutes(app)
+	routes_api_user.RegisterRoutes(app)
+	routes_api_prod.RegisterRoutes(app)
+
+	routes_pages.RegisterRoutes(app)
 
 	startServer(app.Router, os.Getenv("ENV"))
 }

@@ -1,4 +1,4 @@
-package routes_user
+package routes_api_prod
 
 import (
 	"net/http"
@@ -7,15 +7,15 @@ import (
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/middlewares"
 )
 
-type RoutesUser struct {
+type RoutesProd struct {
 	App *app.Application
 }
 
 func RegisterRoutes(app *app.Application) {
-	userRoutes := &RoutesUser{App: app}
+	prodRoutes := &RoutesProd{App: app}
 
-	app.Router.Handle("/user/create", middlewares.Chain(
-		http.HandlerFunc(userRoutes.CreateRoute),
+	app.Router.Handle("/test", middlewares.Chain(
+		http.HandlerFunc(prodRoutes.CreateRoute),
 
 		middlewares.CorsMiddleware("GET"),
 	))

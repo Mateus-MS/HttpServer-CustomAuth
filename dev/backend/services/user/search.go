@@ -12,15 +12,16 @@ func Search(userOBJ *models.User, db *sql.DB) (user *models.User, err error) {
 			id,
 			username,
 			email,
-			session_token
+			password,
+			session_token,
+			csrf_token
 		FROM tb_user
 		WHERE username = $1
 		OR email = $2
+		OR session_token = $3
 	`
 
-	println("Searching for user: ", userOBJ.Username)
-
-	err = db.QueryRow(query, userOBJ.Username, userOBJ.Email).Scan(&userOBJ.ID, &userOBJ.Username, &userOBJ.Email, &userOBJ.SessionToken)
+	err = db.QueryRow(query, userOBJ.Username, userOBJ.Email, userOBJ.SessionToken.String).Scan(&userOBJ.ID, &userOBJ.Username, &userOBJ.Email, &userOBJ.PasswordHash, &userOBJ.SessionToken, &userOBJ.CSRFToken)
 	if err == sql.ErrNoRows {
 		return nil, models.ErrorInvalidUser
 	} else if err != nil {

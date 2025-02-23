@@ -112,3 +112,4 @@ _____
 - __Go dot env__ - github.com/joho/godotenv
 - __Cert generator__ - golang.org/x/crypto/acme/autocert
 - __Postgresql driver__ - github.com/lib/pq
+- __To hash data__ golang.org/x/crypto/bcrypt

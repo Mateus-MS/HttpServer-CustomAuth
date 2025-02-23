@@ -23,7 +23,7 @@ func Create(userOBJ *models.User, db *sql.DB) error {
 		return err
 	}
 
-	if _, err := db.Exec(query, userOBJ.Username, userOBJ.Password, userOBJ.Email); err != nil {
+	if _, err := db.Exec(query, userOBJ.Username, userOBJ.PasswordHash, userOBJ.Email); err != nil {
 		return err
 	}
 

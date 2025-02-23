@@ -1,4 +1,4 @@
-package routes_prod
+package routes_api_prod
 
 import "net/http"
 

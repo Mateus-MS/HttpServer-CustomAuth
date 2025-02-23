@@ -7,12 +7,13 @@ import (
 )
 
 type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID           int    `json:"id"`
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"password_hash"`
 
 	SessionToken sql.NullString `json:"session_token"`
+	CSRFToken    sql.NullString `json:"csrf_token"`
 }
 
 func (user *User) Validate() error {
@@ -24,11 +25,11 @@ func (user *User) Validate() error {
 		return ErrorInvalidUser
 	}
 
-	if user.Password == "" {
+	if user.PasswordHash == "" {
 		return ErrorInvalidUser
 	}
 
-	if strings.Contains(user.Password, " ") {
+	if strings.Contains(user.PasswordHash, " ") {
 		return ErrorInvalidUser
 	}
 
@@ -48,13 +49,13 @@ func (user *User) Copy() User {
 		ID:           user.ID,
 		Username:     user.Username,
 		Email:        user.Email,
-		Password:     user.Password,
+		PasswordHash: user.PasswordHash,
 		SessionToken: user.SessionToken,
+		CSRFToken:    user.CSRFToken,
 	}
 }
 
 // errors
-
 var (
 	ErrorInvalidUser       = errors.New("Invalid user")
 	ErrorUserNotFound      = errors.New("User not found")

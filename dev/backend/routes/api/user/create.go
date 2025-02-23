@@ -1,13 +1,14 @@
-package routes_user
+package routes_api_user
 
 import (
 	"net/http"
 
 	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/models"
 	service_user "github.com/Mateus-MS/HttpServerGolang.git/dev/backend/services/user"
+	"github.com/Mateus-MS/HttpServerGolang.git/dev/backend/utils"
 )
 
-func (app *RoutesUser) CreateRoute(w http.ResponseWriter, r *http.Request) {
+func (app *RoutesUser) Create(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -17,10 +18,16 @@ func (app *RoutesUser) CreateRoute(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	pass := r.FormValue("password")
 
+	passHash, err := utils.HashPassword(pass)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	registerOBJ := models.User{
-		Username: user,
-		Email:    email,
-		Password: pass,
+		Username:     user,
+		Email:        email,
+		PasswordHash: passHash,
 	}
 
 	if err := service_user.Create(&registerOBJ, app.App.DB); err != nil {
